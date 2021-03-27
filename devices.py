@@ -14,61 +14,67 @@ def startSetup():
 	LED = 24
 	buzzer = 25
 	GPIO.setup(button, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-	GPIO.add_event_detect(button, GPIO.RISING, callback=button_callback)
+	GPIO.add_event_detect(button, GPIO.RISING, callback=buttonCallback)
 	GPIO.setup(LED, GPIO.OUT)
 	GPIO.setup(buzzer, GPIO.OUT)
-	
+	"""
 	form_1 = pyaudio.paInt16
 	audio = pyaudio.PyAudio()
 	numChannels = 1
 	sample_rate = 44100
 	chunk = 4096
 	record_secs = 10
-
+"""
 # Function that occurs when the button is pressed	
-def buttonCallback():
-	print("Button was pressed")
+def buttonCallback(x):
+	print("\nButton was pressed")
 	#connection.sendall("Button was pressed")
 
 # Play buzzer
-def startBuzzer(buzzer):
+def startBuzzer():
+	buzzer = 25
 	GPIO.output(buzzer, GPIO.HIGH)
 	print("Beep")
 
 # Stop buzzer and pause for 1 second	
-def stopBuzzer(buzzer):
+def stopBuzzer():
+	buzzer = 25
 	GPIO.output(buzzer, GPIO.LOW)
 	print("No Beep")
 
 # Toggle buzzer 4 times	
-def toggleBuzzer(buzzer):
-	stopBuzzer(buzzer)
+def toggleBuzzer():
+	buzzer = 25
+	stopBuzzer()
 	
 	for i in range(1, 5):
-		startBuzzer(buzzer)
-		sleep(0.5)
-		stopBuzzer(buzzer)
-		sleep(0.5)
+		startBuzzer()
+		time.sleep(0.5)
+		stopBuzzer()
+		time.sleep(0.5)
 
 # Turn LED On	
-def startLED(LED):
+def startLED():
+	LED = 24
 	print("LED on")
 	GPIO.output(LED, GPIO.HIGH)
 
 # Turn LED Off
-def stopLED(LED):
+def stopLED():
+	LED = 24
 	print("LED off")
 	GPIO.output(LED, GPIO.LOW)
 
 # Toggle LED 4 times	
-def toggleLED(LED):
-	stopLED(LED)
+def toggleLED():
+	LED = 24
+	stopLED()
 	
 	for i in range(1, 5):
-		startLED(LED)
-		sleep(0.5)
-		stopLED(LED)
-		sleep(0.5)
+		startLED()
+		time.sleep(0.5)
+		stopLED()
+		time.sleep(0.5)
 
 # Start Microphone and record for 10 seconds
 # Then save to a .wav file		

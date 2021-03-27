@@ -13,3 +13,4 @@ while True:
 
 	print("LED off")
 	GPIO.output(LED, GPIO.LOW)
+	time.sleep(1)
