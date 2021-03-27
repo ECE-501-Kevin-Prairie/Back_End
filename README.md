@@ -8,3 +8,6 @@ buzzer.py - Toggles a buzzer every 0.5 seconds
 button.py - Detects a button press event and prints "Button was pressed!" to Console
 
 microphone.py - *IN the Works*
+
+"Raspbian GNU/Linux 10 (buster)"
+Python 3.7.3
