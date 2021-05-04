@@ -1,59 +1,77 @@
 from devices import *
 import socket
 import sys
+import os
+import time
+import _thread
 
 def deviceFunctions(command):
 # Buzzer Commands
-	if(command == '0'):
+	if(command == 'Turn On Buzzer'):
 		startBuzzer() 
-	elif(command == '1'):
+	elif(command == 'Turn Off Buzzer'):
 		stopBuzzer() 
-	elif(command == '2'):
+	elif(command == 'Toggle Buzzer'):
 		toggleBuzzer()
 # LED Commands
-	elif(command == '3'):
+	elif(command == 'Turn On LED'):
 		startLED()
-	elif(command == '4'):
+	elif(command == 'Turn Off LED'):
 		stopLED() 
-	elif(command == '5'):
+	elif(command == 'Toggle LED'):
 		toggleLED()
 # Microphone Commands
-	elif(command == '6'):
-		startBuzzer(), 
-	elif(command == '7'):
-		stopBuzzer(), 
-	elif(command == '8'):
-		toggleBuzzer(),
+	elif(command == 'Record Audio'):
+		startMicrophone(), 
 	else:
 		print('Enter a valid Command')
 
+def onNewClient(connection, clientAddress):
+	print("Client Connected: " + str(clientAddress))
+	while True:
+		command = connection.recv(16)
+		command = command.decode("utf-8")
+		if(command):
+			print(command)
+			deviceFunctions(command)
+			if(command == "Play Audio"):
+				f = (os.getcwd() + "/output.wav", "rb")
+				with open(os.getcwd() + "/output.wav", 'rb') as wave_file:
+					connection.sendfile(wave_file)
+				
+				#f = open(os.getcwd() + "/output.wav", "rb")
+				#l = f.read(1024)
+				#while (l):
+				#	connection.send(l)
+				#	print('Sent ', repr(l))
+				#	l = f.read(1024)
+				#f.close()
+		else:
+			print("Closing connection...")
+			break
+	sock.close()
+
 startSetup()
 
+"""
 while True:
     command = input('Enter Command #: ')
     deviceFunctions(command)
-
 """
+
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-host = socket.gethostname()
-serverAddress = (host, 10000)
+host = '10.0.0.124'
+port = 65432
+serverAddress = (host, port)
 
 print("Starting up on port: " + str(serverAddress[1]))
 sock.bind(serverAddress)
-sock.listen(1)
+sock.listen(5)
 
 while True:
 	print("Waiting for a Connection...")
 	connection, clientAddress = sock.accept()
+	_thread.start_new_thread(onNewClient,(connection,clientAddress))
 	
-	try:
-		print("Client Connected: " + str(clientAddress))
-		while True:
-			command = connection.recv(16)
-			command = int(command)
-			deviceFunctions(command)
-			connection.sendall("Command Complete!\nPlease enter a new command")
-	
-	finally:
-		sock.close()
-"""
+sock.close()
+

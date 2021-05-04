@@ -1,107 +1,80 @@
 # Import Required Libaries
 import RPi.GPIO as GPIO
 import time
-import pyaudio
+import sounddevice as sd
+from scipy.io.wavfile import write
 import wave
 import socket
 import sys
 
 # Set pin #'s, Pin Modes, Button Event, PyAudio settings
 def startSetup():
-	GPIO.setmode(GPIO.BCM)
-	GPIO.setwarnings(False)
-	button = 23
-	LED = 24
-	buzzer = 25
-	GPIO.setup(button, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-	GPIO.add_event_detect(button, GPIO.RISING, callback=buttonCallback)
-	GPIO.setup(LED, GPIO.OUT)
-	GPIO.setup(buzzer, GPIO.OUT)
-	"""
-	form_1 = pyaudio.paInt16
-	audio = pyaudio.PyAudio()
-	numChannels = 1
-	sample_rate = 44100
-	chunk = 4096
-	record_secs = 10
-"""
-# Function that occurs when the button is pressed	
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+    button = 23
+    LED = 24
+    buzzer = 25
+    GPIO.setup(button, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+    GPIO.add_event_detect(button, GPIO.RISING, callback=buttonCallback)
+    GPIO.setup(LED, GPIO.OUT)
+    GPIO.setup(buzzer, GPIO.OUT)
+# Function that occurs when the button is pressed   
 def buttonCallback(x):
-	print("\nButton was pressed")
-	#connection.sendall("Button was pressed")
+    print("\nButton was pressed")
+    #connection.sendall("Button was pressed")
 
 # Play buzzer
 def startBuzzer():
-	buzzer = 25
-	GPIO.output(buzzer, GPIO.HIGH)
-	print("Beep")
+    buzzer = 25
+    GPIO.output(buzzer, GPIO.HIGH)
+    print("Beep")
 
-# Stop buzzer and pause for 1 second	
+# Stop buzzer and pause for 1 second    
 def stopBuzzer():
-	buzzer = 25
-	GPIO.output(buzzer, GPIO.LOW)
-	print("No Beep")
+    buzzer = 25
+    GPIO.output(buzzer, GPIO.LOW)
+    print("No Beep")
 
-# Toggle buzzer 4 times	
+# Toggle buzzer 4 times 
 def toggleBuzzer():
-	buzzer = 25
-	stopBuzzer()
-	
-	for i in range(1, 5):
-		startBuzzer()
-		time.sleep(0.5)
-		stopBuzzer()
-		time.sleep(0.5)
+    buzzer = 25
+    stopBuzzer()
+    
+    for i in range(1, 5):
+        startBuzzer()
+        time.sleep(0.5)
+        stopBuzzer()
+        time.sleep(0.5)
 
-# Turn LED On	
+# Turn LED On   
 def startLED():
-	LED = 24
-	print("LED on")
-	GPIO.output(LED, GPIO.HIGH)
+    LED = 24
+    print("LED on")
+    GPIO.output(LED, GPIO.HIGH)
 
 # Turn LED Off
 def stopLED():
-	LED = 24
-	print("LED off")
-	GPIO.output(LED, GPIO.LOW)
+    LED = 24
+    print("LED off")
+    GPIO.output(LED, GPIO.LOW)
 
-# Toggle LED 4 times	
+# Toggle LED 4 times    
 def toggleLED():
-	LED = 24
-	stopLED()
-	
-	for i in range(1, 5):
-		startLED()
-		time.sleep(0.5)
-		stopLED()
-		time.sleep(0.5)
+    LED = 24
+    stopLED()
+    
+    for i in range(1, 5):
+        startLED()
+        time.sleep(0.5)
+        stopLED()
+        time.sleep(0.5)
 
 # Start Microphone and record for 10 seconds
-# Then save to a .wav file		
+# Then save to a .wav file      
 def startMicrophone():
-	for i in range(audio.get_device_count()):
-		if("USB" in p.get_device_info_by_index(i).get('name')):
-			index = i
-			break
-
-	stream = audio.open(format = form_1, rate = sample_rate, channels = numChannels, 
-						input_device_index = index, input = True, frames_per_buffer = chunk)
-
-	print("Recording")
-	frames = []
-
-	for i in range (0, int((sample_rate/chunk) * record_secs)):
-		data = stream.read(chunk)
-		frames.append(data)
-		
-	print("Finished Recording")
-
-	stream.stop_stream()
-	stream.close()
-	audio.terminate()
-
-	wavefile = wave.open("Test.wav", 'wb')
-	wavefile.setnchannels(numChannels)
-	wavefile.setsampwidth(audio.get_sample_size(form_1))
-	wavefile.writeframes(b''.join(frames))
-	wavefile.close()
+    fs = 44100
+    seconds = 10
+    
+    myrecording = sd.rec(int(seconds * fs), samplerate = fs, channels = 2)
+    sd.wait()
+    write('output.wav', fs, myrecording)
