@@ -73,7 +73,7 @@ def toggleLED():
 # Then save to a .wav file      
 def startMicrophone():
     fs = 44100
-    seconds = 10
+    seconds = 2
     
     myrecording = sd.rec(int(seconds * fs), samplerate = fs, channels = 2)
     sd.wait()

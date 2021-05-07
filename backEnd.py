@@ -35,21 +35,21 @@ def onNewClient(connection, clientAddress):
 			print(command)
 			deviceFunctions(command)
 			if(command == "Play Audio"):
-				f = (os.getcwd() + "/output.wav", "rb")
-				with open(os.getcwd() + "/output.wav", 'rb') as wave_file:
-					connection.sendfile(wave_file)
+				#f = (os.getcwd() + "/output.txt", "rb")
+				#with open(os.getcwd() + "/output.txt", 'rb') as text_file:
+				#	connection.sendfile(text_file)
 				
-				#f = open(os.getcwd() + "/output.wav", "rb")
-				#l = f.read(1024)
-				#while (l):
-				#	connection.send(l)
-				#	print('Sent ', repr(l))
-				#	l = f.read(1024)
-				#f.close()
+				f = open(os.getcwd() + "/output.wav", "rb")
+				l = f.read(1024)
+				while (l):
+					connection.send(l)
+					print('Sent ', repr(l))
+					l = f.read(1024)
+				f.close()
 		else:
 			print("Closing connection...")
 			break
-	sock.close()
+	#sock.close()
 
 startSetup()
 
@@ -66,7 +66,7 @@ serverAddress = (host, port)
 
 print("Starting up on port: " + str(serverAddress[1]))
 sock.bind(serverAddress)
-sock.listen(5)
+sock.listen(10)
 
 while True:
 	print("Waiting for a Connection...")
